@@ -1,13 +1,13 @@
 ---
 # Pre-check: OS
-- name: Fail if not ubuntu
+- name: Fail if not redhat
   fail:
-    msg: "Only ubuntu supported"
-  when: ansible_os_family != "Ubuntu"
+    msg: "Only redhat supported"
+  when: ansible_os_family != "RedHat"
 
 # Pre-check: Port
 - name: Check port usage
-  shell: ss -tuln | grep ":{{ tomcat_port }}"
+  shell: netstat -tuln | grep ":{{ tomcat_port }}"
   register: port_check
   ignore_errors: yes
 
@@ -18,7 +18,7 @@
 
 # Install Java
 - name: Install Java
-  apt:
+  yum:
     name: java-11-openjdk
     state: present
 
