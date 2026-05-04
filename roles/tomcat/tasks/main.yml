@@ -1,13 +1,13 @@
 ---
-# Pre-check: OS
-- name: Fail if not redhat
+# Pre-check: OS (allow Amazon Linux also)
+- name: Fail if not supported OS
   fail:
-    msg: "Only redhat supported"
+    msg: "Only RedHat/Amazon Linux supported"
   when: ansible_os_family != "RedHat"
 
 # Pre-check: Port
 - name: Check port usage
-  shell: netstat -tuln | grep ":{{ tomcat_port }}"
+  shell: ss -tuln | grep ":{{ tomcat_port }}"
   register: port_check
   ignore_errors: yes
 
@@ -16,10 +16,10 @@
     msg: "Port already in use"
   when: port_check.rc == 0
 
-# Install Java
+# Install Java (Amazon Linux fix)
 - name: Install Java
   yum:
-    name: java-11-openjdk
+    name: java-11-amazon-corretto
     state: present
 
 # Download Tomcat
